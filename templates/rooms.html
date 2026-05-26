@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Cave - Main Chamber</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .door-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 50px; }
+        .door { 
+            width: 200px; height: 300px; border: 2px solid #333; 
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            background: #111; color: #555; text-decoration: none; font-weight: bold; transition: 0.3s;
+        }
+        .door.unlocked { border-color: var(--accent); color: var(--text-glow); cursor: pointer; }
+        .door.unlocked:hover { box-shadow: 0 0 20px var(--accent); transform: scale(1.05); }
+        .door.solved { border-color: #0f0; color: #0f0; box-shadow: 0 0 10px #0f0; }
+        
+        /* Hidden Easter Egg Element */
+        #hidden-lantern {
+            position: absolute; top: 20px; right: 20px; width: 20px; height: 20px;
+            background: rgba(255, 255, 255, 0.01); cursor: pointer; border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <script src="{{ url_for('static', filename='js/torch.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+
+    <div class="container" style="text-align: center;">
+        <h1 class="glow">The Main Chamber</h1>
+        <p>Choose your path. Some doors remain sealed until you prove your worth.</p>
+        
+        <div class="door-container">
+            <a href="/room/1" class="door {% if 'room1' in solved %}solved{% else %}unlocked{% endif %}">
+                <h2>Room 1</h2>
+                <p>Data Scrolls</p>
+                {% if 'room1' in solved %}<p>[CLEARED]</p>{% endif %}
+            </a>
+
+            {% set r23_unlocked = 'room1' in solved %}
+            <a href="{% if r23_unlocked %}/room/2{% else %}#{% endif %}" class="door {% if 'room2' in solved %}solved{% elif r23_unlocked %}unlocked{% endif %}">
+                <h2>Room 2</h2>
+                <p>Encrypted Runes</p>
+                {% if not r23_unlocked %}<p>[LOCKED]</p>{% endif %}
+            </a>
+
+            <a href="{% if r23_unlocked %}/room/3{% else %}#{% endif %}" class="door {% if 'room3' in solved %}solved{% elif r23_unlocked %}unlocked{% endif %}">
+                <h2>Room 3</h2>
+                <p>Abandoned Terminal</p>
+                {% if not r23_unlocked %}<p>[LOCKED]</p>{% endif %}
+            </a>
+
+            {% set r4_unlocked = 'room2' in solved and 'room3' in solved %}
+            <a href="{% if r4_unlocked %}/room/4{% else %}#{% endif %}" class="door {% if 'room4' in solved %}solved{% elif r4_unlocked %}unlocked{% endif %}">
+                <h2>Room 4</h2>
+                <p>Corrupted Database</p>
+                {% if not r4_unlocked %}<p>[LOCKED]</p>{% endif %}
+            </a>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <a href="/leaderboard" style="color: var(--accent);">View Leaderboard</a>
+        </div>
+
+        <div id="hidden-lantern" onclick="triggerHiddenRoom()"></div>
+    </div>
+
+    <script>
+        // Easter Egg Logic: Click the hidden lantern 5 times rapidly
+        let clickCount = 0;
+        let clickTimer;
+        
+        function triggerHiddenRoom() {
+            clickCount++;
+            clearTimeout(clickTimer);
+            
+            if (clickCount >= 5) {
+                alert("A hidden passage opens... You found a secret flag!");
+                // Simulating finding the flag. The user would still need an input box to submit it, 
+                // or we auto-submit it for them via the API:
+                submitSecretFlag('CAVE{hidden_echo}');
+                clickCount = 0;
+            }
+            
+            clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+        }
+
+        function submitSecretFlag(flag) {
+            fetch('/api/submit_flag', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ room_id: 'hidden1', flag: flag })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') triggerSuccess(data.points);
+            });
+        }
+        
+        // Check for Winning Hall
+        const solvedRooms = {{ solved | tojson }};
+        if(solvedRooms.includes('room1') && solvedRooms.includes('room2') && 
+           solvedRooms.includes('room3') && solvedRooms.includes('room4')) {
+            window.location.href = '/winners';
+        }
+    </script>
+</body>
+</html>

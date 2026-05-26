@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Room 1: Data Scrolls</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .scroll-box {
+            background: #1a1a1a;
+            border-left: 10px solid #8b4513;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+        }
+        .download-btn {
+            display: inline-block;
+            background: #8b4513;
+            color: #fff;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 3px;
+            margin: 20px 0;
+            transition: 0.3s;
+        }
+        .download-btn:hover { background: #a0522d; box-shadow: 0 0 10px #8b4513; }
+        .input-zone { margin-top: 20px; }
+        .input-zone input { padding: 10px; width: 300px; margin-right: 10px; }
+        .input-zone button { padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <h1 class="glow">Room 1: The Ancient Data Scrolls</h1>
+        <div class="scroll-box">
+            <p>The cave walls are covered in thousands of numbers. They follow a strict sequence, but one "scroll" contains an anomaly—a data point that does not belong.</p>
+            <p>Find the <strong>ID</strong> of the outlier in the dataset to unlock the flag.</p>
+            
+            <!-- ✅ Use Flask download route -->
+            <a href="{{ url_for('download_xlsx') }}" class="download-btn">📥 Download Data_analysis.xlsx</a>
+        </div>
+
+        <div class="input-zone">
+            <input type="text" id="flag-input" placeholder="CAVE{...}">
+            <button onclick="submitFlag('room1')">Submit Finding</button>
+        </div>
+    </div>
+
+    <!-- ✅ Include JS at the end -->
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>

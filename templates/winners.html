@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Cave - Escape</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 20px; height: 300px; margin-top: 50px; }
+        .podium { background: #111; border-top: 4px solid var(--accent); text-align: center; padding: 20px; color: #fff; width: 120px; box-shadow: 0 -10px 30px rgba(255, 183, 3, 0.2); }
+        .p1 { height: 200px; border-color: #ffd700; }
+        .p2 { height: 150px; border-color: #c0c0c0; }
+        .p3 { height: 100px; border-color: #cd7f32; }
+        .medal { font-size: 40px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <script src="{{ url_for('static', filename='js/torch.js') }}"></script>
+    <div class="container" style="text-align: center;">
+        <h1 class="glow">YOU ESCAPED THE CAVE</h1>
+        <p>Congratulations, Challenger. You have conquered all the mysteries.</p>
+
+        <div class="podium-container">
+            {% if top_players|length >= 2 %}
+            <div class="podium p2">
+                <div class="medal">🥈</div>
+                <div>{{ top_players[1].username }}</div>
+                <div style="font-size: 12px; color: #aaa;">{{ top_players[1].points }} pts</div>
+            </div>
+            {% endif %}
+
+            {% if top_players|length >= 1 %}
+            <div class="podium p1">
+                <div class="medal">🥇</div>
+                <div>{{ top_players[0].username }}</div>
+                <div style="font-size: 12px; color: #aaa;">{{ top_players[0].points }} pts</div>
+            </div>
+            {% endif %}
+
+            {% if top_players|length >= 3 %}
+            <div class="podium p3">
+                <div class="medal">🥉</div>
+                <div>{{ top_players[2].username }}</div>
+                <div style="font-size: 12px; color: #aaa;">{{ top_players[2].points }} pts</div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 50px;">
+            <a href="/leaderboard" style="color: var(--accent);">View Full Leaderboard</a>
+        </div>
+    </div>
+</body>
+</html>

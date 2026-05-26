@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Cave</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .progress-bar { width: 300px; height: 5px; background: #333; margin-top: 20px; }
+        .progress { width: 0%; height: 100%; background: var(--accent); transition: width 3s linear; }
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <h1 class="glow">Behave well !!!</h1>
+        <h2>You're in The cave</h2>
+        <div class="progress-bar"><div class="progress" id="prog"></div></div>
+    </div>
+    <script>
+        setTimeout(() => { document.getElementById('prog').style.width = '100%'; }, 100);
+        setTimeout(() => { window.location.href = '/login'; }, 3500);
+    </script>
+</body>
+</html>

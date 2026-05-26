@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Cave - Leaderboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { border: 1px solid #333; padding: 15px; text-align: center; }
+        th { color: var(--accent); background: #111; }
+        tr:nth-child(1) { color: #ffd700; font-weight: bold; text-shadow: 0 0 10px #ffd700; }
+        tr:nth-child(2) { color: #c0c0c0; font-weight: bold; }
+        tr:nth-child(3) { color: #cd7f32; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <script src="{{ url_for('static', filename='js/torch.js') }}"></script>
+    <div class="container">
+        <h1 class="glow" style="text-align: center;">Hall of Records</h1>
+        <p style="text-align: center;">The fastest and sharpest minds in the cave.</p>
+        
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Challenger</th>
+                <th>Points</th>
+                <th>Rooms Solved</th>
+            </tr>
+            {% for player in players %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ player.username }}</td>
+                <td>{{ player.points }}</td>
+                <td>{{ player.rooms_count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/rooms" style="color: var(--accent);">Return to the Cave</a>
+        </div>
+    </div>
+</body>
+</html>

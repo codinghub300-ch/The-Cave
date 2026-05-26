@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Room 3: Abandoned Terminal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    
+    <div class="container">
+        <h1 class="glow">Room 3: Packet Hunter</h1>
+        <p>Analyze the traffic. Find the anomaly.</p>
+        
+        <div id="terminal" style="background: #000; color: #0f0; padding: 20px; height: 300px; overflow-y: scroll; border: 1px solid #333;">
+            <div>> root@cave-sys:~# Welcome. Type 'help' for commands.</div>
+            <div id="term-output"></div>
+            <div style="display: flex;">
+                <span>> </span>
+                <input type="text" id="term-input" style="background: transparent; color: #0f0; border: none; outline: none; width: 100%;">
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <input type="text" id="flag-input" placeholder="CAVE{...}">
+            <button onclick="submitFlag('room3')">Submit Flag</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
+    <script>
+        // Fake Terminal Logic
+        const input = document.getElementById('term-input');
+        const output = document.getElementById('term-output');
+
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const cmd = input.value;
+                let response = `<div>> ${cmd}</div>`;
+                
+                if (cmd === 'help') response += `<div>Available: tcpdump, netstat, ping</div>`;
+                else if (cmd === 'tcpdump') response += `<div>Capturing on eth0... <br> 192.168.1.5 > 10.0.0.2: ICMP echo request<br> Payload: 43 41 56 45 7b 70 61 63 6b 65 74 5f 68 75 6e 74 65 72 7d</div>`; // Hex for the flag!
+                else response += `<div>Command not found</div>`;
+
+                output.innerHTML += response;
+                input.value = '';
+                document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+            }
+        });
+
+        // Submit Flag to Backend
+        function submitFlag(roomId) {
+            const flag = document.getElementById('flag-input').value;
+            fetch('/api/submit_flag', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ room_id: roomId, flag: flag })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    // Trigger your glowing treasure animation here!
+                    alert('Correct! You earned ' + data.points + ' points!');
+                    window.location.href = '/rooms';
+                } else {
+                    alert('Access Denied. Incorrect Flag.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

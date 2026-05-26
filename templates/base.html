@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="torch"></div>
+    <div class="container" style="max-width: 800px; margin: 50px auto; text-align: center;">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="flag-popup">
+        <h2 style="color: var(--gold);">CHALLENGE SOLVED</h2>
+        <p id="discovered-flag"></p>
+        <button class="btn-cave" onclick="window.location.href='/rooms'">Proceed</button>
+    </div>
+
+    <script src="/static/js/torch.js"></script>
+    <script src="/static/js/game.js"></script>
+</body>
+</html>

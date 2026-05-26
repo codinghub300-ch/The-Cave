@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Cave - Enter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .login-box {
+            background: rgba(10, 10, 12, 0.8);
+            border: 1px solid #333;
+            padding: 40px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(255, 183, 3, 0.2);
+            margin-top: 10vh;
+        }
+        
+        .login-box input {
+            display: block;
+            width: 80%;
+            margin: 15px auto;
+            padding: 10px;
+            background: #111;
+            border: 1px solid #444;
+            color: var(--text-glow);
+            font-family: monospace;
+        }
+
+        .login-box button {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .login-box button:hover {
+            background: var(--accent);
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <script src="{{ url_for('static', filename='js/torch.js') }}"></script>
+
+    <div class="container">
+        <div class="login-box">
+            <h1 class="glow">Who steps into the dark?</h1>
+            <p>Identify yourself to proceed.</p>
+            
+            <form action="/login" method="POST">
+                <input type="text" name="username" placeholder="Challenger Name" required>
+                <input type="password" name="password" placeholder="Secret Passphrase" required>
+                <button type="submit">Enter The Cave</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

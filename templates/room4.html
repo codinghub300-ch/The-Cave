@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Room 4: Corrupted Chamber</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .corrupted { border: 1px solid #ff0000; box-shadow: 0 0 15px #ff0000; padding: 20px; }
+        .red-glow { color: #ff4d4d; text-shadow: 0 0 10px #ff0000; }
+        .terminal-box { background: #111; color: #ff4d4d; padding: 15px; margin-bottom: 20px; font-family: monospace; }
+        input { background: #222; border: 1px solid #555; color: #fff; padding: 10px; margin: 5px 0; width: 95%; }
+        button { background: #ff0000; color: #000; font-weight: bold; padding: 10px 20px; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+
+    <div class="container">
+        <h1 class="red-glow">Room 4: Corrupted Database</h1>
+        <div class="terminal-box">
+            System Error: Integrity Check Failed.<br>
+            Query Template: <br>
+            <code>SELECT * FROM guards WHERE username='{user}' AND password='{pass}'</code>
+        </div>
+
+        <div class="corrupted">
+            <h3>Guard Authentication</h3>
+            <input type="text" id="inj-username" placeholder="Username">
+            <input type="text" id="inj-password" placeholder="Password">
+            <button onclick="attemptSQLi()">Login</button>
+            <p id="sqli-response" class="red-glow"></p>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px solid #333; padding-top: 20px;">
+            <h3>Main System Override</h3>
+            <input type="text" id="flag-input" placeholder="Submit CAVE{...} here">
+            <button onclick="submitFlag('room4')" style="background: var(--accent);">Submit Flag</button>
+        </div>
+    </div>
+
+    <script>
+        function attemptSQLi() {
+            const user = document.getElementById('inj-username').value;
+            const pass = document.getElementById('inj-password').value;
+            
+            fetch('/api/room4_login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const responseEl = document.getElementById('sqli-response');
+                if(data.status === 'success') {
+                    responseEl.style.color = '#0f0';
+                    responseEl.innerHTML = `${data.msg}<br>CRITICAL DATA LEAK: ${data.flag}`;
+                } else {
+                    responseEl.style.color = '#ff4d4d';
+                    responseEl.innerText = data.msg;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
