@@ -166,73 +166,105 @@ def download_xlsx():
 
 # ---------------- FLAG VALIDATION ----------------
 
+# @app.route('/api/submit_flag', methods=['POST'])
+# def submit_flag():
+
+#     if 'username' not in session:
+#         return jsonify({'status': 'error', 'msg': 'Unauthorized'})
+
+#     data = request.json
+
+#     room_id = data.get('room_id')
+#     submitted_flag = data.get('flag')
+
+#     db = get_db()
+
+#     correct_flag = db.execute(
+#         "SELECT * FROM flags WHERE room_id = ?",
+#         (room_id,)
+#     ).fetchone()
+
+#     if correct_flag and correct_flag['flag_value'] == submitted_flag:
+
+#         if room_id in session.get('rooms_solved', []):
+#             return jsonify({'status': 'already_solved'})
+
+#         solves = db.execute(
+#             "SELECT COUNT(*) as count FROM solves WHERE room_id = ?",
+#             (room_id,)
+#         ).fetchone()['count']
+
+#         points_to_award = max(
+#             50,
+#             correct_flag['base_points'] - (solves * 10)
+#         )
+
+#         username = session['username']
+
+#         db.execute(
+#             "INSERT INTO solves (room_id, username, solve_order) VALUES (?, ?, ?)",
+#             (room_id, username, solves + 1)
+#         )
+
+#         user = db.execute(
+#             "SELECT * FROM users WHERE username = ?",
+#             (username,)
+#         ).fetchone()
+
+#         solved_list = json.loads(user['rooms_solved'])
+#         solved_list.append(room_id)
+
+#         db.execute(
+#             "UPDATE users SET points = points + ?, rooms_solved = ? WHERE username = ?",
+#             (points_to_award, json.dumps(solved_list), username)
+#         )
+
+#         db.commit()
+
+#         session['rooms_solved'] = solved_list
+
+#         return jsonify({
+#             'status': 'success',
+#             'points': points_to_award
+#         })
+
+#     return jsonify({
+#         'status': 'error',
+#         'msg': 'Incorrect Flag'
+#     })
+
 @app.route('/api/submit_flag', methods=['POST'])
 def submit_flag():
 
-    if 'username' not in session:
-        return jsonify({'status': 'error', 'msg': 'Unauthorized'})
-
     data = request.json
 
-    room_id = data.get('room_id')
-    submitted_flag = data.get('flag')
+    room_id = data.get("room_id")
+    submitted_flag = data.get("flag")
 
-    db = get_db()
+    flags = {
+        "room1": "CAVE{2025-03-15-North}",
+        "room2": "CAVE{protocol_decoder}",
+        "room3": "CAVE{N3TW0RK_DR1FT}",
+        "room4": "CAVE{sql_escape}"
+    }
 
-    correct_flag = db.execute(
-        "SELECT * FROM flags WHERE room_id = ?",
-        (room_id,)
-    ).fetchone()
+    if submitted_flag == flags.get(room_id):
 
-    if correct_flag and correct_flag['flag_value'] == submitted_flag:
+        solved = session.get("rooms_solved", [])
 
-        if room_id in session.get('rooms_solved', []):
-            return jsonify({'status': 'already_solved'})
+        if room_id not in solved:
+            solved.append(room_id)
 
-        solves = db.execute(
-            "SELECT COUNT(*) as count FROM solves WHERE room_id = ?",
-            (room_id,)
-        ).fetchone()['count']
-
-        points_to_award = max(
-            50,
-            correct_flag['base_points'] - (solves * 10)
-        )
-
-        username = session['username']
-
-        db.execute(
-            "INSERT INTO solves (room_id, username, solve_order) VALUES (?, ?, ?)",
-            (room_id, username, solves + 1)
-        )
-
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ?",
-            (username,)
-        ).fetchone()
-
-        solved_list = json.loads(user['rooms_solved'])
-        solved_list.append(room_id)
-
-        db.execute(
-            "UPDATE users SET points = points + ?, rooms_solved = ? WHERE username = ?",
-            (points_to_award, json.dumps(solved_list), username)
-        )
-
-        db.commit()
-
-        session['rooms_solved'] = solved_list
+        session["rooms_solved"] = solved
 
         return jsonify({
-            'status': 'success',
-            'points': points_to_award
+            "status": "success",
+            "points": 100
         })
 
     return jsonify({
-        'status': 'error',
-        'msg': 'Incorrect Flag'
+        "status": "error"
     })
-
 
 # ---------------- SQLi ROOM ----------------
 
