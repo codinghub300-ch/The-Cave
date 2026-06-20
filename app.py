@@ -18,41 +18,54 @@ def index():
     return render_template('loading.html')
 
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+
+#     if request.method == 'POST':
+
+#         username = request.form['username']
+#         password = request.form['password']
+
+#         db = get_db()
+
+#         user = db.execute(
+#             "SELECT * FROM users WHERE username = ?",
+#             (username,)
+#         ).fetchone()
+
+#         if not user:
+
+#             db.execute(
+#                 "INSERT INTO users (username, password) VALUES (?, ?)",
+#                 (username, password)
+#             )
+#             db.commit()
+
+#             user = db.execute(
+#                 "SELECT * FROM users WHERE username = ?",
+#                 (username,)
+#             ).fetchone()
+
+#         session['username'] = user['username']
+#         session['rooms_solved'] = json.loads(user['rooms_solved'])
+
+#         return redirect(url_for('rooms'))
+
+#     return render_template('login.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
     if request.method == 'POST':
 
         username = request.form['username']
-        password = request.form['password']
 
-        db = get_db()
-
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ?",
-            (username,)
-        ).fetchone()
-
-        if not user:
-
-            db.execute(
-                "INSERT INTO users (username, password) VALUES (?, ?)",
-                (username, password)
-            )
-            db.commit()
-
-            user = db.execute(
-                "SELECT * FROM users WHERE username = ?",
-                (username,)
-            ).fetchone()
-
-        session['username'] = user['username']
-        session['rooms_solved'] = json.loads(user['rooms_solved'])
+        session['username'] = username
+        session['rooms_solved'] = []
 
         return redirect(url_for('rooms'))
 
     return render_template('login.html')
-
 
 @app.route('/rooms')
 def rooms():
