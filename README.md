@@ -143,3 +143,17 @@ the-cave/
 
 ```bash
 pip install flask
+
+```
+
+---
+
+<div align="center">
+
+## 💙 Developed by Coding Hub
+
+Interactive Ramadan Cyber Puzzle Adventure
+
+© 2026 Coding Hub. All Rights Reserved.
+
+</div>
